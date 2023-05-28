@@ -1,32 +1,13 @@
-﻿implement main
-    open core, stdio
+implement main
+    open core, file, stdio
 
 domains
     genre = scifi; drama; thriller; animation; action.
 
-class facts
+class facts - file1
     cinema : (integer Nr, string Name, string Addr, integer Tel, integer Seat).
     movie : (integer Nr1, string Title, integer Year, string Direc, genre Genre).
     show : (integer Show, integer Mov, string Date, string Clock, integer Rev).
-
-clauses
-    cinema(1, 'Cineplex      ', 'Main St', 5551234, 200).
-    cinema(2, 'Imeperial     ', 'Pedonale', 5554321, 150).
-    cinema(3, 'Plaza         ', 'Ponce De Leon Ave', 5555431, 175).
-    cinema(4, 'Agimi         ', 'Kinostudio', 5552351, 250).
-    cinema(5, 'Tirana        ', 'Tek Bashkia', 5552451, 300).
-
-    movie(1, 'Black Widow', 2021, 'Cate Shortland', scifi).
-    movie(2, 'King Richard', 2021, 'Reinaldo Marcus Green', drama).
-    movie(3, 'Scream', 2022, 'Tyler Gillett', thriller).
-    movie(4, 'Moana', 2016, 'Ron Clements', animation).
-    movie(5, 'Avengers endgame', 2019, 'Anthony Russo', thriller).
-
-    show(1, 1, '2023-04-21', '18:00', 1700).
-    show(2, 2, '2023-04-25', '20:00', 1100).
-    show(3, 5, '2023-04-15', '19:00', 2200).
-    show(4, 3, '2023-04-05', '21:00', 1000).
-    show(5, 4, '2023-04-12', '18:00', 500).
 
 %Кинотеатр, показывающий определенный фильм.
 class predicates
@@ -74,7 +55,7 @@ clauses
     printRevenues() :-
         show(_, Mov, _, _, Rev),
         movie(Mov, Title, _, _, _),
-        write(Title, "доход составляет $:\t", Rev),
+        write(Title, " доход составляет $\t", Rev),
         nl,
         fail.
     printRevenues() :-
@@ -135,8 +116,17 @@ clauses
         fail.
     increaseRevenue(_).
 
+class predicates
+    reconsult : (string FileName).
+clauses
+    reconsult(FileName) :-
+        retractFactDB(file1),
+        consult(FileName, file1).
+
 clauses
     run() :-
+        console::init(),
+        reconsult("..\\file1.txt"),
         write("\nКинотеатр, показывающий определенный фильм\n"),
         showing_movie(Name, Title),
         write(Name),
